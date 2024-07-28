@@ -3,6 +3,18 @@ from typing import List
 
 
 def get_team_data(player_team: dict, side: str, turn_data):
+    """
+    Extracts and updates the team data based on the given turn data.
+
+    Args:
+        player_team (dict): A dictionary representing the player's team data.
+        side (str): The side of the player ('winner' or 'loser').
+        turn_data: The turn data to process.
+
+    Returns:
+        dict: The updated player's team data.
+
+    """
     # turn data is one nested list in the log column field
     for event in turn_data:
         for action in event:
@@ -138,6 +150,16 @@ def get_team_data(player_team: dict, side: str, turn_data):
 
 
 def find_moveset(team_data, random_sets):
+    """
+    Finds and updates the moveset for each Pokemon in the team data based on the available random sets.
+
+    Args:
+        team_data (dict): A dictionary containing the team data for each Pokemon.
+        random_sets (dict): A dictionary containing the available random sets for each Pokemon.
+
+    Returns:
+        dict: The updated team data with the movesets modified based on the available random sets.
+    """
     for pokemon_name in team_data.keys():
         if len(team_data[pokemon_name]["moves"]) == 4:
             continue
@@ -148,12 +170,10 @@ def find_moveset(team_data, random_sets):
                 if isinstance(known_moves, dict):
                     known_moves = set(known_moves.keys())
                 if known_moves.issubset(possible_sets[role]["moves"]):
-                    # also grab the evs and ivs for the pokemon
                     if "evs" in possible_sets[role]:
                         team_data[pokemon_name]["evs"] = possible_sets[role]["evs"]
                     if "ivs" in possible_sets[role]:
                         team_data[pokemon_name]["ivs"] = possible_sets[role]["ivs"]
-
                     potential_moveset = possible_sets[role]["moves"]
                     seen_unseen_moves = dict()
                     for move in potential_moveset:
@@ -162,12 +182,22 @@ def find_moveset(team_data, random_sets):
                         else:
                             seen_unseen_moves[move] = "unseen"
                     team_data[pokemon_name]["moves"] = seen_unseen_moves
-
                     break
     return team_data
 
 
 def calculate_damage(atkr: dict, defdr: dict, move_used):
+    """
+    Calculate the damage inflicted by an attacker on a defender using a specific move.
+
+    Args:
+        atkr (dict): The dictionary representing the attacker's attributes.
+        defdr (dict): The dictionary representing the defender's attributes.
+        move_used: The move used by the attacker.
+
+    Returns:
+        float: The calculated damage.
+    """
     damage_calc = require("@smogon/calc")
     generation = damage_calc.Generations.get(9)
     attacker = None
@@ -275,8 +305,20 @@ def find_current_pokemon(side: str, turn_data):
 
 
 def parse_player_next_turn(turn: List[str], side):
-    # parse to see if the player used a move, swapped, or swapped because of a faint
-    # return the move used or the pokemon swapped to
+    """
+    Parses the player's next turn to determine the action taken.
+
+    Args:
+        turn (List[str]): The list of actions performed in the turn.
+        side: The side of the player.
+
+    Returns:
+        dict: A dictionary containing the chosen action. The dictionary can have the following keys:
+            - "move": The move used by the player.
+            - "switch": The Pokemon switched to by the player.
+            - "faint": The Pokemon that fainted.
+            - "status": The status condition of the player's Pokemon.
+    """
     chosen_action = {}
     move_chosen = False
     pokemon_chosen = False
