@@ -392,4 +392,284 @@
 |switch|p1a: Araquanid|Araquanid, L82, F|100/100
 |switch|p2a: Reuniclus|Reuniclus, L88, F|337/337
 |turn|1|-message|viewerisland forfeited.|
+|win|showdown-dojo|init|battle
+|title|viewerisland vs. showdown-dojo
+|j|☆viewerisland
+|j|☆showdown-dojo
+|gametype|singles|player|p1|viewerisland|2||player|p2|showdown-dojo|170|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] Random Battle
+|rule|Species Clause: Limit one of each Pokémon
+|rule|HP Percentage Mod: HP is shown in percentages
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Illusion Level Mod: Illusion disguises the Pokémon's true level
+|
+|start
+|switch|p1a: Gumshoos|Gumshoos, L95, M|100/100
+|switch|p2a: Bellibolt|Bellibolt, L84, M|320/320
+|turn|1|-message|viewerisland forfeited.|
+|win|showdown-dojo|init|battle
+|title|viewerisland vs. showdown-dojo
+|j|☆viewerisland
+|j|☆showdown-dojo
+|gametype|singles|player|p1|viewerisland|2||player|p2|showdown-dojo|170|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] Random Battle
+|rule|Species Clause: Limit one of each Pokémon
+|rule|HP Percentage Mod: HP is shown in percentages
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Illusion Level Mod: Illusion disguises the Pokémon's true level
+|
+|start
+|switch|p1a: Eternatus|Eternatus, L69|100/100
+|switch|p2a: Scovillain|Scovillain, L91, F|266/266
+|-ability|p1a: Eternatus|Pressure
+|turn|1|-message|viewerisland forfeited.|
+|win|showdown-dojo|init|battle
+|title|viewerisland vs. showdown-dojo
+|j|☆viewerisland
+|j|☆showdown-dojo
+|gametype|singles|player|p1|viewerisland|2||player|p2|showdown-dojo|170|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] Random Battle
+|rule|Species Clause: Limit one of each Pokémon
+|rule|HP Percentage Mod: HP is shown in percentages
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Illusion Level Mod: Illusion disguises the Pokémon's true level
+|
+|start
+|switch|p1a: Plusle|Plusle, L95, M|100/100
+|switch|p2a: Lumineon|Lumineon, L93, M|279/279
+|turn|1|-message|viewerisland forfeited.|
+|win|showdown-dojo|init|battle
+|title|viewerisland vs. showdown-dojo
+|j|☆viewerisland
+|j|☆showdown-dojo
+|gametype|singles|player|p1|viewerisland|2||player|p2|showdown-dojo|170|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] Random Battle
+|rule|Species Clause: Limit one of each Pokémon
+|rule|HP Percentage Mod: HP is shown in percentages
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Illusion Level Mod: Illusion disguises the Pokémon's true level
+|
+|start
+|switch|p1a: Rotom|Rotom, L87|100/100
+|switch|p2a: Noctowl|Noctowl, L95, M|344/344
+|turn|1|-message|viewerisland forfeited.|
+|win|showdown-dojo|init|battle
+|title|viewerisland vs. showdown-dojo
+|j|☆viewerisland
+|j|☆showdown-dojo
+|gametype|singles|player|p1|viewerisland|2||player|p2|showdown-dojo|170|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] Random Battle
+|rule|Species Clause: Limit one of each Pokémon
+|rule|HP Percentage Mod: HP is shown in percentages
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Illusion Level Mod: Illusion disguises the Pokémon's true level
+|
+|start
+|switch|p1a: Basculin|Basculin-Blue-Striped, L86, M|100/100
+|switch|p2a: Heracross|Heracross, L80, F|259/259
+|turn|1|
+|-terastallize|p2a: Heracross|Normal
+|move|p1a: Basculin|Flip Turn|p2a: Heracross
+|-damage|p2a: Heracross|119/259|
+|switch|p1a: Flamigo|Flamigo, L82, M|100/100|[from] Flip Turn
+|move|p2a: Heracross|Close Combat|p1a: Flamigo
+|-resisted|p1a: Flamigo
+|-damage|p1a: Flamigo|72/100
+|-unboost|p2a: Heracross|def|1
+|-unboost|p2a: Heracross|spd|1
+|
+|-status|p2a: Heracross|brn|[from] item: Flame Orb
+|turn|2|-message|viewerisland forfeited.|
+|win|showdown-dojo|init|battle
+|title|viewerisland vs. showdown-dojo
+|j|☆viewerisland
+|j|☆showdown-dojo
+|gametype|singles|player|p1|viewerisland|2||player|p2|showdown-dojo|170|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] Random Battle
+|rule|Species Clause: Limit one of each Pokémon
+|rule|HP Percentage Mod: HP is shown in percentages
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Illusion Level Mod: Illusion disguises the Pokémon's true level
+|
+|start
+|switch|p1a: Scream Tail|Scream Tail, L84|100/100
+|switch|p2a: Vigoroth|Vigoroth, L85, M|275/275
+|turn|1|-message|viewerisland forfeited.|
+|win|showdown-dojo|init|battle
+|title|viewerisland vs. showdown-dojo
+|j|☆viewerisland
+|j|☆showdown-dojo
+|gametype|singles|player|p1|viewerisland|2||player|p2|showdown-dojo|170|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] Random Battle
+|rule|Species Clause: Limit one of each Pokémon
+|rule|HP Percentage Mod: HP is shown in percentages
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Illusion Level Mod: Illusion disguises the Pokémon's true level
+|
+|start
+|switch|p1a: Okidogi|Okidogi, L77, M|100/100
+|switch|p2a: Umbreon|Umbreon, L84, F|297/297
+|turn|1|-message|viewerisland forfeited.|
+|win|showdown-dojo|init|battle
+|title|viewerisland vs. showdown-dojo
+|j|☆viewerisland
+|j|☆showdown-dojo
+|gametype|singles|player|p1|viewerisland|2||player|p2|showdown-dojo|170|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] Random Battle
+|rule|Species Clause: Limit one of each Pokémon
+|rule|HP Percentage Mod: HP is shown in percentages
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Illusion Level Mod: Illusion disguises the Pokémon's true level
+|
+|start
+|switch|p1a: Bronzong|Bronzong, L88|100/100
+|switch|p2a: Meowstic|Meowstic-F, L89, F|277/277
+|turn|1|-message|viewerisland forfeited.|
+|win|showdown-dojo|init|battle
+|title|viewerisland vs. showdown-dojo
+|j|☆viewerisland
+|j|☆showdown-dojo
+|gametype|singles|player|p1|viewerisland|2||player|p2|showdown-dojo|170|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] Random Battle
+|rule|Species Clause: Limit one of each Pokémon
+|rule|HP Percentage Mod: HP is shown in percentages
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Illusion Level Mod: Illusion disguises the Pokémon's true level
+|
+|start
+|switch|p1a: Golduck|Golduck, L90, M|100/100
+|switch|p2a: Feraligatr|Feraligatr, L79, M|264/264
+|-ability|p1a: Golduck|Cloud Nine
+|turn|1|-message|viewerisland forfeited.|
+|win|showdown-dojo|init|battle
+|title|viewerisland vs. showdown-dojo
+|j|☆viewerisland
+|j|☆showdown-dojo
+|gametype|singles|player|p1|viewerisland|2||player|p2|showdown-dojo|170|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] Random Battle
+|rule|Species Clause: Limit one of each Pokémon
+|rule|HP Percentage Mod: HP is shown in percentages
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Illusion Level Mod: Illusion disguises the Pokémon's true level
+|
+|start
+|switch|p1a: Tauros|Tauros-Paldea-Combat, L83, M|100/100
+|switch|p2a: Appletun|Appletun, L92, M|352/352
+|-ability|p1a: Tauros|Intimidate|boost
+|-unboost|p2a: Appletun|atk|1
+|turn|1|-message|viewerisland forfeited.|
+|win|showdown-dojo|init|battle
+|title|viewerisland vs. showdown-dojo
+|j|☆viewerisland
+|j|☆showdown-dojo
+|gametype|singles|player|p1|viewerisland|2||player|p2|showdown-dojo|170|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] Random Battle
+|rule|Species Clause: Limit one of each Pokémon
+|rule|HP Percentage Mod: HP is shown in percentages
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Illusion Level Mod: Illusion disguises the Pokémon's true level
+|
+|start
+|switch|p1a: Dudunsparce|Dudunsparce-Three-Segment, L82, M|100/100
+|switch|p2a: Politoed|Politoed, L88, F|302/302
+|-weather|RainDance|[from] ability: Drizzle|[of] p2a: Politoed
+|turn|1|-message|viewerisland forfeited.|
+|win|showdown-dojo|init|battle
+|title|viewerisland vs. showdown-dojo
+|j|☆viewerisland
+|j|☆showdown-dojo
+|gametype|singles|player|p1|viewerisland|2||player|p2|showdown-dojo|170|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] Random Battle
+|rule|Species Clause: Limit one of each Pokémon
+|rule|HP Percentage Mod: HP is shown in percentages
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Illusion Level Mod: Illusion disguises the Pokémon's true level
+|
+|start
+|switch|p1a: Meowstic|Meowstic, L89, M|100/100
+|switch|p2a: Hydreigon|Hydreigon, L79, M|275/275
+|turn|1|-message|viewerisland forfeited.|
+|win|showdown-dojo|init|battle
+|title|viewerisland vs. showdown-dojo
+|j|☆viewerisland
+|j|☆showdown-dojo
+|gametype|singles|player|p1|viewerisland|2||player|p2|showdown-dojo|170|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] Random Battle
+|rule|Species Clause: Limit one of each Pokémon
+|rule|HP Percentage Mod: HP is shown in percentages
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Illusion Level Mod: Illusion disguises the Pokémon's true level
+|
+|start
+|switch|p1a: Orthworm|Orthworm, L88, M|100/100
+|switch|p2a: Gardevoir|Gardevoir, L83, M|249/249
+|-ability|p2a: Gardevoir|Earth Eater|[from] ability: Trace|[of] p1a: Orthworm
+|turn|1|-message|viewerisland forfeited.|
+|win|showdown-dojo|init|battle
+|title|viewerisland vs. showdown-dojo
+|j|☆viewerisland
+|j|☆showdown-dojo
+|gametype|singles|player|p1|viewerisland|2||player|p2|showdown-dojo|170|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] Random Battle
+|rule|Species Clause: Limit one of each Pokémon
+|rule|HP Percentage Mod: HP is shown in percentages
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Illusion Level Mod: Illusion disguises the Pokémon's true level
+|
+|start
+|switch|p1a: Hypno|Hypno, L95, F|100/100
+|switch|p2a: Hitmonchan|Hitmonchan, L87, M|229/229
+|turn|1|
+|-terastallize|p2a: Hitmonchan|Dark
+|move|p2a: Hitmonchan|Rapid Spin|p1a: Hypno
+|-damage|p1a: Hypno|88/100
+|-boost|p2a: Hitmonchan|spe|1
+|move|p1a: Hypno|Toxic|p2a: Hitmonchan
+|-status|p2a: Hitmonchan|tox
+|
+|-heal|p1a: Hypno|94/100|[from] item: Leftovers
+|-damage|p2a: Hitmonchan|215/229 tox|[from] psn
+|turn|2|-message|viewerisland forfeited.|
 |win|showdown-dojo
