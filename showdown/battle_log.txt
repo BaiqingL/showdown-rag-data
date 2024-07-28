@@ -1,0 +1,395 @@
+>battle-gen9randombattle-2169145027
+|init|battle
+|title|viewerisland vs. showdown-dojo
+|j|☆viewerisland
+|j|☆showdown-dojo
+>battle-gen9randombattle-2169145027
+|request|>battle-gen9randombattle-2169145027
+|t:|1722203102
+|gametype|singles>battle-gen9randombattle-2169145027
+|player|p1|viewerisland|2|>battle-gen9randombattle-2169145027
+|request|{"active":[{"moves":[{"move":"Ice Beam","id":"icebeam","pp":16,"maxpp":16,"target":"normal","disabled":false},{"move":"Haze","id":"haze","pp":48,"maxpp":48,"target":"all","disabled":false},{"move":"Surf","id":"surf","pp":24,"maxpp":24,"target":"allAdjacent","disabled":false},{"move":"Rest","id":"rest","pp":8,"maxpp":8,"target":"self","disabled":false}],"canTerastallize":"Water"}],"side":{"name":"showdown-dojo","id":"p2","pokemon":[{"ident":"p2: Politoed","details":"Politoed, L88, F","condition":"302/302","active":true,"stats":{"atk":137,"def":182,"spa":209,"spd":226,"spe":173},"moves":["icebeam","haze","surf","rest"],"baseAbility":"drizzle","item":"chestoberry","pokeball":"pokeball","ability":"drizzle","commanding":false,"reviving":false,"teraType":"Water","terastallized":""},{"ident":"p2: Frosmoth","details":"Frosmoth, L82, F","condition":"249/249","active":false,"stats":{"atk":111,"def":146,"spa":252,"spd":195,"spe":154},"moves":["hurricane","quiverdance","bugbuzz","icebeam"],"baseAbility":"icescales","item":"heavydutyboots","pokeball":"pokeball","ability":"icescales","commanding":false,"reviving":false,"teraType":"Water","terastallized":""},{"ident":"p2: Gardevoir","details":"Gardevoir, L83, F","condition":"249/249","active":false,"stats":{"atk":112,"def":156,"spa":255,"spd":239,"spe":180},"moves":["psychic","mysticalfire","moonblast","trick"],"baseAbility":"trace","item":"choicescarf","pokeball":"pokeball","ability":"trace","commanding":false,"reviving":false,"teraType":"Fairy","terastallized":""},{"ident":"p2: Quagsire","details":"Quagsire, L84, F","condition":"297/297","active":false,"stats":{"atk":191,"def":191,"spa":157,"spd":157,"spe":107},"moves":["earthquake","recover","icebeam","toxic"],"baseAbility":"unaware","item":"leftovers","pokeball":"pokeball","ability":"unaware","commanding":false,"reviving":false,"teraType":"Fairy","terastallized":""},{"ident":"p2: Landorus","details":"Landorus-Therian, L76, M","condition":"260/260","active":false,"stats":{"atk":264,"def":181,"spa":204,"spd":166,"spe":182},"moves":["stoneedge","taunt","stealthrock","earthquake"],"baseAbility":"intimidate","item":"leftovers","pokeball":"pokeball","ability":"intimidate","commanding":false,"reviving":false,"teraType":"Ground","terastallized":""},{"ident":"p2: Brute Bonnet","details":"Brute Bonnet, L81","condition":"312/312","active":false,"stats":{"atk":252,"def":207,"spa":175,"spd":207,"spe":136},"moves":["closecombat","seedbomb","suckerpunch","crunch"],"baseAbility":"protosynthesis","item":"choiceband","pokeball":"pokeball","ability":"protosynthesis","commanding":false,"reviving":false,"teraType":"Poison","terastallized":""}]},"rqid":3}>battle-gen9randombattle-2169145027
+|player|p2|showdown-dojo|170|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] Random Battle
+|rule|Species Clause: Limit one of each Pokémon
+|rule|HP Percentage Mod: HP is shown in percentages
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Illusion Level Mod: Illusion disguises the Pokémon's true level
+|
+|t:|1722203102
+|start
+|switch|p1a: Raging Bolt|Raging Bolt, L78|100/100
+|switch|p2a: Politoed|Politoed, L88, F|302/302
+|-weather|RainDance|[from] ability: Drizzle|[of] p2a: Politoed
+|turn|1>battle-gen9randombattle-2169145027
+|-message|viewerisland forfeited.>battle-gen9randombattle-2169145027
+|
+|win|showdown-dojo>battle-gen9randombattle-2169145027
+|l|☆viewerisland|init|battle
+|title|viewerisland vs. showdown-dojo
+|j|☆viewerisland
+|j|☆showdown-dojo
+|t:|1722203269
+|gametype|singles|player|p1|viewerisland|2||player|p2|showdown-dojo|170|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] Random Battle
+|rule|Species Clause: Limit one of each Pokémon
+|rule|HP Percentage Mod: HP is shown in percentages
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Illusion Level Mod: Illusion disguises the Pokémon's true level
+|
+|t:|1722203269
+|start
+|switch|p1a: Kingdra|Kingdra, L84, M|100/100
+|switch|p2a: Volbeat|Volbeat, L90, M|263/263
+|turn|1|
+|t:|1722203275
+|switch|p2a: Torterra|Torterra, L78, M|276/276
+|move|p1a: Kingdra|Rain Dance|p1a: Kingdra
+|-weather|RainDance
+|
+|-weather|RainDance|[upkeep]
+|upkeep
+|turn|2|
+|t:|1722203281
+|switch|p2a: Volbeat|Volbeat, L90, M|263/263
+|move|p1a: Kingdra|Hurricane|p2a: Volbeat
+|-supereffective|p2a: Volbeat
+|-damage|p2a: Volbeat|71/263
+|-start|p2a: Volbeat|confusion
+|-damage|p1a: Kingdra|91/100|[from] item: Life Orb
+|
+|-weather|RainDance|[upkeep]
+|upkeep
+|turn|3|
+|t:|1722203291
+|move|p1a: Kingdra|Hurricane|p2a: Volbeat
+|-supereffective|p2a: Volbeat
+|-damage|p2a: Volbeat|0 fnt
+|faint|p2a: Volbeat
+|-damage|p1a: Kingdra|81/100|[from] item: Life Orb
+|
+|-weather|RainDance|[upkeep]
+|upkeep|
+|t:|1722203291
+|switch|p2a: Zamazenta|Zamazenta, L72|251/251
+|-ability|p2a: Zamazenta|Dauntless Shield|boost
+|-boost|p2a: Zamazenta|def|1
+|turn|4|
+|t:|1722203300
+|-terastallize|p2a: Zamazenta|Fighting
+|move|p1a: Kingdra|Hurricane|p2a: Zamazenta
+|-supereffective|p2a: Zamazenta
+|-damage|p2a: Zamazenta|74/251
+|-damage|p1a: Kingdra|71/100|[from] item: Life Orb
+|move|p2a: Zamazenta|Rest|p2a: Zamazenta
+|-status|p2a: Zamazenta|slp|[from] move: Rest
+|-heal|p2a: Zamazenta|251/251 slp|[silent]
+|-enditem|p2a: Zamazenta|Chesto Berry|[eat]
+|-curestatus|p2a: Zamazenta|slp|[msg]
+|
+|-weather|RainDance|[upkeep]
+|upkeep
+|turn|5|
+|t:|1722203311
+|move|p1a: Kingdra|Hurricane|p2a: Zamazenta
+|-supereffective|p2a: Zamazenta
+|-damage|p2a: Zamazenta|66/251
+|-damage|p1a: Kingdra|61/100|[from] item: Life Orb
+|move|p2a: Zamazenta|Iron Defense|p2a: Zamazenta
+|-boost|p2a: Zamazenta|def|2
+|
+|-weather|none
+|upkeep
+|turn|6|
+|t:|1722203319
+|switch|p2a: Torterra|Torterra, L78, M|276/276
+|move|p1a: Kingdra|Draco Meteor|p2a: Torterra
+|-damage|p2a: Torterra|84/276
+|-unboost|p1a: Kingdra|spa|2
+|-damage|p1a: Kingdra|51/100|[from] item: Life Orb
+|
+|upkeep
+|turn|7|
+|t:|1722203328
+|switch|p1a: Meowscarada|Meowscarada, L78, F|100/100
+|move|p2a: Torterra|Rock Blast|p1a: Meowscarada
+|-damage|p1a: Meowscarada|92/100
+|-damage|p1a: Meowscarada|82/100
+|-damage|p1a: Meowscarada|73/100
+|-damage|p1a: Meowscarada|63/100
+|-hitcount|p1a: Meowscarada|4
+|
+|upkeep
+|turn|8|
+|t:|1722203337
+|switch|p2a: Entei|Entei, L78|307/307
+|move|p1a: Meowscarada|Toxic Spikes|p2a: Entei
+|-start|p1a: Meowscarada|typechange|Poison|[from] ability: Protean
+|-sidestart|p2: showdown-dojo|move: Toxic Spikes
+|
+|upkeep
+|turn|9|
+|t:|1722203343
+|move|p1a: Meowscarada|Toxic Spikes|p2a: Entei
+|-sidestart|p2: showdown-dojo|move: Toxic Spikes
+|move|p2a: Entei|Sacred Fire|p1a: Meowscarada
+|-damage|p1a: Meowscarada|0 fnt
+|faint|p1a: Meowscarada
+|
+|upkeep|
+|t:|1722203350
+|switch|p1a: Kingdra|Kingdra, L84, M|51/100
+|turn|10|
+|t:|1722203353
+|switch|p2a: Chansey|Chansey, L85, F|564/564
+|-status|p2a: Chansey|tox
+|move|p1a: Kingdra|Rain Dance|p1a: Kingdra
+|-weather|RainDance
+|
+|-weather|RainDance|[upkeep]
+|-damage|p2a: Chansey|529/564 tox|[from] psn
+|upkeep
+|turn|11|
+|t:|1722203361
+|-curestatus|p2a: Chansey|tox|[from] ability: Natural Cure
+|switch|p2a: Torterra|Torterra, L78, M|84/276
+|-status|p2a: Torterra|tox
+|move|p1a: Kingdra|Wave Crash|p2a: Torterra
+|-crit|p2a: Torterra
+|-damage|p2a: Torterra|0 fnt
+|faint|p2a: Torterra
+|-damage|p1a: Kingdra|40/100|[from] Recoil
+|-damage|p1a: Kingdra|31/100|[from] item: Life Orb
+|
+|-weather|RainDance|[upkeep]
+|upkeep|
+|t:|1722203361
+|switch|p2a: Entei|Entei, L78|307/307
+|-status|p2a: Entei|tox
+|turn|12|
+|t:|1722203375
+|switch|p2a: Zamazenta|Zamazenta, L72, tera:Fighting|66/251
+|-status|p2a: Zamazenta|tox
+|move|p1a: Kingdra|Wave Crash|p2a: Zamazenta
+|-damage|p2a: Zamazenta|0 fnt
+|faint|p2a: Zamazenta
+|-damage|p1a: Kingdra|22/100|[from] Recoil
+|-damage|p1a: Kingdra|12/100|[from] item: Life Orb
+|
+|-weather|RainDance|[upkeep]
+|upkeep|
+|t:|1722203375
+|switch|p2a: Chansey|Chansey, L85, F|529/564
+|-status|p2a: Chansey|tox
+|turn|13|
+|t:|1722203387
+|-curestatus|p2a: Chansey|tox|[from] ability: Natural Cure
+|switch|p2a: Jirachi|Jirachi, L80|291/291
+|move|p1a: Kingdra|Wave Crash|p2a: Jirachi
+|-damage|p2a: Jirachi|53/291
+|-damage|p1a: Kingdra|0 fnt|[from] Recoil
+|faint|p1a: Kingdra
+|
+|-weather|RainDance|[upkeep]
+|upkeep|
+|t:|1722203398
+|switch|p1a: Primarina|Primarina, L83, M|100/100
+|turn|14|
+|t:|1722203403
+|move|p2a: Jirachi|Iron Head|p1a: Primarina
+|-damage|p1a: Primarina|68/100
+|cant|p1a: Primarina|flinch
+|
+|-weather|none
+|upkeep
+|turn|15|
+|t:|1722203408
+|move|p2a: Jirachi|U-turn|p1a: Primarina
+|-resisted|p1a: Primarina
+|-damage|p1a: Primarina|57/100|
+|t:|1722203408
+|switch|p2a: Entei|Entei, L78|307/307 tox|[from] U-turn
+|move|p1a: Primarina|Flip Turn|p2a: Entei
+|-supereffective|p2a: Entei
+|-damage|p2a: Entei|203/307 tox|
+|t:|1722203416
+|switch|p1a: Volcarona|Volcarona, L77, F|100/100|[from] Flip Turn
+|
+|-damage|p2a: Entei|184/307 tox|[from] psn
+|upkeep
+|turn|16|
+|t:|1722203427
+|-terastallize|p1a: Volcarona|Ground
+|move|p2a: Entei|Flare Blitz|p1a: Volcarona
+|-damage|p1a: Volcarona|0 fnt
+|faint|p1a: Volcarona
+|-damage|p2a: Entei|99/307 tox|[from] Recoil
+|
+|-damage|p2a: Entei|61/307 tox|[from] psn
+|upkeep|
+|t:|1722203434
+|switch|p1a: Primarina|Primarina, L83, M|57/100
+|turn|17|
+|t:|1722203437
+|switch|p2a: Jirachi|Jirachi, L80|53/291
+|move|p1a: Primarina|Psychic|p2a: Jirachi
+|-resisted|p2a: Jirachi
+|-damage|p2a: Jirachi|36/291
+|
+|upkeep
+|turn|18|
+|t:|1722203443
+|move|p2a: Jirachi|Iron Head|p1a: Primarina
+|-damage|p1a: Primarina|21/100
+|move|p1a: Primarina|Psychic|p2a: Jirachi
+|-resisted|p2a: Jirachi
+|-damage|p2a: Jirachi|18/291
+|
+|upkeep
+|turn|19|
+|t:|1722203448
+|switch|p2a: Chansey|Chansey, L85, F|529/564
+|-status|p2a: Chansey|tox
+|move|p1a: Primarina|Psychic|p2a: Chansey
+|-damage|p2a: Chansey|467/564 tox
+|
+|-damage|p2a: Chansey|432/564 tox|[from] psn
+|upkeep
+|turn|20|
+|t:|1722203456
+|move|p1a: Primarina|Psychic|p2a: Chansey
+|-damage|p2a: Chansey|367/564 tox
+|-unboost|p2a: Chansey|spd|1
+|move|p2a: Chansey|Seismic Toss|p1a: Primarina
+|-damage|p1a: Primarina|0 fnt
+|faint|p1a: Primarina
+|
+|-damage|p2a: Chansey|297/564 tox|[from] psn
+|upkeep|
+|t:|1722203465
+|switch|p1a: Emboar|Emboar, L84, F|100/100
+|turn|21|
+|t:|1722203467
+|-curestatus|p2a: Chansey|tox|[from] ability: Natural Cure
+|switch|p2a: Jirachi|Jirachi, L80|18/291
+|move|p1a: Emboar|Close Combat|p2a: Jirachi
+|-damage|p2a: Jirachi|0 fnt
+|-unboost|p1a: Emboar|def|1
+|-unboost|p1a: Emboar|spd|1
+|faint|p2a: Jirachi
+|
+|upkeep|
+|t:|1722203468
+|switch|p2a: Entei|Entei, L78|61/307 tox
+|turn|22|
+|t:|1722203478
+|switch|p1a: Perrserker|Perrserker, L89, M|100/100
+|move|p2a: Entei|Flare Blitz|p1a: Perrserker
+|-supereffective|p1a: Perrserker
+|-damage|p1a: Perrserker|0 fnt
+|faint|p1a: Perrserker
+|-damage|p2a: Entei|0 fnt|[from] Recoil
+|faint|p2a: Entei
+|
+|upkeep|
+|t:|1722203485
+|switch|p2a: Chansey|Chansey, L85, F|297/564
+|switch|p1a: Emboar|Emboar, L84, F|100/100
+|-status|p2a: Chansey|tox
+|turn|23|
+|t:|1722203490
+|move|p1a: Emboar|Close Combat|p2a: Chansey
+|-supereffective|p2a: Chansey
+|-damage|p2a: Chansey|0 fnt
+|-unboost|p1a: Emboar|def|1
+|-unboost|p1a: Emboar|spd|1
+|faint|p2a: Chansey
+|
+|win|viewerisland|init|battle
+|title|viewerisland vs. showdown-dojo
+|j|☆viewerisland
+|j|☆showdown-dojo
+|gametype|singles|player|p1|viewerisland|2||player|p2|showdown-dojo|170|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] Random Battle
+|rule|Species Clause: Limit one of each Pokémon
+|rule|HP Percentage Mod: HP is shown in percentages
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Illusion Level Mod: Illusion disguises the Pokémon's true level
+|
+|start
+|switch|p1a: Miraidon|Miraidon, L65|100/100
+|switch|p2a: Galvantula|Galvantula, L82, F|249/249
+|-fieldstart|move: Electric Terrain|[from] ability: Hadron Engine|[of] p1a: Miraidon
+|turn|1|
+|move|p2a: Galvantula|Bug Buzz|p1a: Miraidon
+|-damage|p1a: Miraidon|63/100
+|move|p1a: Miraidon|Substitute|p1a: Miraidon
+|-start|p1a: Miraidon|Substitute
+|-damage|p1a: Miraidon|38/100
+|
+|-heal|p1a: Miraidon|44/100|[from] item: Leftovers
+|turn|2|init|battle
+|title|viewerisland vs. showdown-dojo
+|j|☆viewerisland
+|j|☆showdown-dojo
+|gametype|singles|player|p1|viewerisland|2||player|p2|showdown-dojo|170|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] Random Battle
+|rule|Species Clause: Limit one of each Pokémon
+|rule|HP Percentage Mod: HP is shown in percentages
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Illusion Level Mod: Illusion disguises the Pokémon's true level
+|
+|start
+|switch|p1a: Abomasnow|Abomasnow, L85, M|100/100
+|switch|p2a: Dudunsparce|Dudunsparce-Three-Segment, L82, F|339/339
+|-weather|Snow|[from] ability: Snow Warning|[of] p1a: Abomasnow
+|turn|1|-message|viewerisland forfeited.|
+|win|showdown-dojo|init|battle
+|title|viewerisland vs. showdown-dojo
+|j|☆viewerisland
+|j|☆showdown-dojo
+|gametype|singles|player|p1|viewerisland|2||player|p2|showdown-dojo|170|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] Random Battle
+|rule|Species Clause: Limit one of each Pokémon
+|rule|HP Percentage Mod: HP is shown in percentages
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Illusion Level Mod: Illusion disguises the Pokémon's true level
+|
+|start
+|switch|p1a: Glaceon|Glaceon, L94, M|100/100
+|switch|p2a: Gastrodon|Gastrodon, L86, M|331/331
+|turn|1|-message|viewerisland forfeited.|
+|win|showdown-dojo|init|battle
+|title|viewerisland vs. showdown-dojo
+|j|☆viewerisland
+|j|☆showdown-dojo
+|gametype|singles|player|p1|viewerisland|2||player|p2|showdown-dojo|170|
+|teamsize|p1|6
+|teamsize|p2|6
+|gen|9
+|tier|[Gen 9] Random Battle
+|rule|Species Clause: Limit one of each Pokémon
+|rule|HP Percentage Mod: HP is shown in percentages
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Illusion Level Mod: Illusion disguises the Pokémon's true level
+|
+|start
+|switch|p1a: Araquanid|Araquanid, L82, F|100/100
+|switch|p2a: Reuniclus|Reuniclus, L88, F|337/337
+|turn|1|-message|viewerisland forfeited.|
+|win|showdown-dojo
