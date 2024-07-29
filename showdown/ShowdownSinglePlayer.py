@@ -10,8 +10,15 @@ import requests
 import copy
 import logging
 from javascript import require
+import os
+import re
+from dotenv import load_dotenv
+
+load_dotenv()
 
 import json
+
+FIREWORKS_API_KEY = os.getenv("FIREWORKS_API_KEY")
 
 
 class ShowdownSinglePlayer(Player):
@@ -27,11 +34,37 @@ class ShowdownSinglePlayer(Player):
         self.move_effects = pd.read_csv("data/moves.csv")
         self.item_lookup = json.load(open("data/items.json"))
         self.game_history = []
+        self.llm_endpoint = "https://api.fireworks.ai/inference/v1/chat/completions"
         super().__init__(
             account_configuration=account_configuration,
             server_configuration=server_configuration,
             save_replays=True,
+            start_timer_on_battle_start=True,
+            battle_format="gen9randombattle",
         )
+
+    def _contact_llm(self, message: str):
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + FIREWORKS_API_KEY,
+        }
+        payload = {
+            "model": "accounts/fireworks/models/llama-v3p1-405b-instruct",
+            "max_tokens": 16384,
+            "top_p": 1,
+            "top_k": 40,
+            "presence_penalty": 0,
+            "frequency_penalty": 0,
+            "temperature": 0.6,
+            "messages": [{"role": "user", "content": message}],
+        }
+        response = requests.request(
+            "POST", self.llm_endpoint, headers=headers, data=json.dumps(payload)
+        )
+        print(response.json())
+        choice = response.json()["choices"][0]["message"]["content"]
+        return choice
 
     def _generate_prompt(
         self,
@@ -44,8 +77,9 @@ class ShowdownSinglePlayer(Player):
         player_active,
         opponent_active,
         available_choices,
+        fainted=False,
     ) -> str:
-        prompt = """You are an expert in Pokemon and competitive battling. You are the best Pokemon showdown player in the random battle format.
+        prompt_not_fainted = """You are an expert in Pokemon and competitive battling. You are the best Pokemon showdown player in the random battle format.
 You have been invited to a Pokemon tournament with a grand prize of $1,000,000. You are confident that you will win the tournament.
 You're skills are the best in the world, and you have never lost a random battle in your life. You are the best of the best.
 You know when to switch, when to set up, and when to attack. You know the best moves to use in every situation.
@@ -82,19 +116,66 @@ Here are the available choices you can make:
 
 AVAILABLE_CHOICES
 
+Setting up is important, and you know when to switch, when to set up, and when to attack. Sometimes it's good to sacrifice a pokemon to get a free switch in, and sometimes it's good to set up to sweep the opponent's team. You know the best moves to use in every situation.
+
 Only output the number for the choice you want, so you should only respond with a number indicating the choice, don't explain, just give the number.
 """
-        return (
-            prompt.replace("GAME_HISTORY", game_history)
-            .replace("PLAYER_TEAM_INFO", player_team)
-            .replace("OPPONENT_TEAM_INFO", opponent_team)
-            .replace("PLAYER_MOVES_IMPACT", player_moves_impact)
-            .replace("OPPONENT_MOVES_IMPACT_INDIVIDUAL", opponent_moves_impact)
-            .replace("OPPONENT_MOVES_IMPACT_TEAM", opponent_moves_impact_team)
-            .replace("PLAYER_POKEMON", player_active)
-            .replace("OPPONENT_POKEMON", opponent_active)
-            .replace("AVAILABLE_CHOICES", available_choices)
-        )
+
+        prompt_fainted = """You are an expert in Pokemon and competitive battling. You are the best Pokemon showdown player in the random battle format.
+You have been invited to a Pokemon tournament with a grand prize of $1,000,000. You are confident that you will win the tournament.
+You're skills are the best in the world, and you have never lost a random battle in your life. You are the best of the best.
+You know when to switch, when to set up, and when to attack. You know the best moves to use in every situation.
+
+Below is information about your team, what you currently know about the opponent team, and the current history of the battle.
+
+Here is the current history of the battle:
+
+GAME_HISTORY
+
+Note that the pokemon PLAYER_POKEMON you sent out has fainted, and you need to switch to another pokemon.
+
+Your current team and moves as to the best of your knowledge:
+
+PLAYER_TEAM_INFO
+
+The opponent team and moves as to the best of your knowledge, since I also looked up the potential movesets for you:
+
+OPPONENT_TEAM_INFO
+
+This is what the opponent moves can probably do to the rest of your team given the current situation:
+
+OPPONENT_MOVES_IMPACT_TEAM
+
+Your Pokemon PLAYER_POKEMON has fainted, and the opponent currently has OPPONENT_POKEMON out.
+
+Here are the available switches you can make:
+
+AVAILABLE_CHOICES
+
+Only output the number for the choice you want, so you should only respond with a number indicating the choice, don't explain, don't add any periods or extra information, just the number.
+"""
+        if fainted:
+            return (
+                prompt_fainted.replace("GAME_HISTORY", game_history)
+                .replace("PLAYER_TEAM_INFO", player_team)
+                .replace("OPPONENT_TEAM_INFO", opponent_team)
+                .replace("OPPONENT_MOVES_IMPACT_TEAM", opponent_moves_impact_team)
+                .replace("PLAYER_POKEMON", player_active)
+                .replace("OPPONENT_POKEMON", opponent_active)
+                .replace("AVAILABLE_CHOICES", available_choices)
+            )
+        else:
+            return (
+                prompt_not_fainted.replace("GAME_HISTORY", game_history)
+                .replace("PLAYER_TEAM_INFO", player_team)
+                .replace("OPPONENT_TEAM_INFO", opponent_team)
+                .replace("PLAYER_MOVES_IMPACT", player_moves_impact)
+                .replace("OPPONENT_MOVES_IMPACT_INDIVIDUAL", opponent_moves_impact)
+                .replace("OPPONENT_MOVES_IMPACT_TEAM", opponent_moves_impact_team)
+                .replace("PLAYER_POKEMON", player_active)
+                .replace("OPPONENT_POKEMON", opponent_active)
+                .replace("AVAILABLE_CHOICES", available_choices)
+            )
 
     async def _handle_battle_message(self, split_messages: List[List[str]]):
         battle_log = []
@@ -110,7 +191,7 @@ Only output the number for the choice you want, so you should only respond with 
             battle_log.append(message)
         with open("battle_log.txt", "a") as f:
             f.write("\n".join(battle_log))
-        self.game_history = battle_log
+        self.game_history.append("\n".join(battle_log))
 
         await super()._handle_battle_message(split_messages)
 
@@ -122,11 +203,10 @@ Only output the number for the choice you want, so you should only respond with 
         return list(move_effect.to_dict()["effect"].values())[0]
 
     def _find_potential_random_set(self, team_data):
-        for pokemon_name in team_data.keys():
-            if len(team_data[pokemon_name]["moves"]) == 4:
-                continue
+        for pokemon in team_data.keys():
+            pokemon_name = team_data[pokemon]["name"].strip().lower()
             if pokemon_name in self.random_sets.keys():
-                known_moves = team_data[pokemon_name]["moves"]
+                known_moves = team_data[pokemon]["moves"]
                 possible_sets = self.random_sets[pokemon_name]["roles"]
                 for role in possible_sets:
                     if isinstance(known_moves, dict):
@@ -134,9 +214,9 @@ Only output the number for the choice you want, so you should only respond with 
                     if known_moves.issubset(possible_sets[role]["moves"]):
                         # also grab the evs and ivs for the pokemon
                         if "evs" in possible_sets[role]:
-                            team_data[pokemon_name]["evs"] = possible_sets[role]["evs"]
+                            team_data[pokemon]["evs"] = possible_sets[role]["evs"]
                         if "ivs" in possible_sets[role]:
-                            team_data[pokemon_name]["ivs"] = possible_sets[role]["ivs"]
+                            team_data[pokemon]["ivs"] = possible_sets[role]["ivs"]
 
                         potential_moveset = possible_sets[role]["moves"]
                         seen_unseen_moves = dict()
@@ -145,7 +225,7 @@ Only output the number for the choice you want, so you should only respond with 
                                 seen_unseen_moves[move] = "seen"
                             else:
                                 seen_unseen_moves[move] = "unseen"
-                        team_data[pokemon_name]["moves"] = seen_unseen_moves
+                        team_data[pokemon]["moves"] = seen_unseen_moves
 
                         break
         return team_data
@@ -163,7 +243,11 @@ Only output the number for the choice you want, so you should only respond with 
                 "ability": pokemon.ability,
                 "fainted": pokemon.fainted,
                 "item": self.item_lookup.get(pokemon.item, ""),
-                "tera": pokemon.tera_type.name if pokemon.terastallized else "",
+                "tera": (
+                    pokemon.tera_type.name.lower().capitalize()
+                    if pokemon.terastallized
+                    else ""
+                ),
                 "name": pokemon._data.pokedex[pokemon.species]["name"],
                 "boosts": pokemon.boosts,
                 "level": pokemon.level,
@@ -241,9 +325,22 @@ Only output the number for the choice you want, so you should only respond with 
             return 0, 0
         if isinstance(result.damage, str):
             return result.damage + "%", result.damage + "%"
-        dmg_range = result.damage.valueOf()
-        min_dmg = min(dmg_range)
-        max_dmg = max(dmg_range)
+        try:
+            if isinstance(result.damage, int):
+                min_dmg = result.damage
+                max_dmg = result.damage
+            else:
+                dmg_range = result.damage.valueOf()
+
+                min_dmg = min(dmg_range)
+                max_dmg = max(dmg_range)
+        except:
+            print("INPUTS: ", atkr.get("name"), defdr.get("name"), move_used)
+            print(atkr)
+            print(defdr)
+            print("ERROR: ", result.damage)
+            print("DMG RANGE: ", dmg_range)
+
         # calculate the percentage of damage
         hp = defdr.get("hp")
         if hp == 0:
@@ -285,9 +382,12 @@ Only output the number for the choice you want, so you should only respond with 
 
         player_moves_impact_prompt = ""
         for impact in player_moves_impact:
-            player_moves_impact_prompt += self._format_move_impact(
-                impact[0], impact[1], cur_opponent_side["name"]
-            )  + "\n"
+            player_moves_impact_prompt += (
+                self._format_move_impact(
+                    impact[0], impact[1], cur_opponent_side["name"]
+                )
+                + "\n"
+            )
 
         opponent_moves_impact = []
         for move in cur_opponent_side["moves"].keys():
@@ -297,9 +397,10 @@ Only output the number for the choice you want, so you should only respond with 
 
         opponent_moves_impact_prompt = ""
         for impact in opponent_moves_impact:
-            opponent_moves_impact_prompt += self._format_move_impact(
-                impact[0], impact[1], cur_player_side["name"]
-            ) + "\n"
+            opponent_moves_impact_prompt += (
+                self._format_move_impact(impact[0], impact[1], cur_player_side["name"])
+                + "\n"
+            )
 
         opponent_moves_impact_team = {}
         for pokemon in player_team.keys():
@@ -317,9 +418,12 @@ Only output the number for the choice you want, so you should only respond with 
         opponent_moves_impact_team_prompt = ""
         for pokemon in opponent_moves_impact_team.keys():
             for impact in opponent_moves_impact_team[pokemon]:
-                opponent_moves_impact_team_prompt += self._format_move_impact(
-                    impact[0], impact[1], player_team[pokemon]["name"]
-                ) + "\n"
+                opponent_moves_impact_team_prompt += (
+                    self._format_move_impact(
+                        impact[0], impact[1], player_team[pokemon]["name"]
+                    )
+                    + "\n"
+                )
 
         available_orders = [BattleOrder(move) for move in battle.available_moves]
         available_orders.extend(
@@ -369,7 +473,14 @@ Only output the number for the choice you want, so you should only respond with 
             cur_player_side["name"],
             cur_opponent_side["name"],
             available_orders_prompt,
+            battle.active_pokemon.fainted,
         )
-        print(prompt)
+        choice = self._contact_llm(prompt)
+        choice = "".join(filter(str.isdigit, choice))
+        if choice == "":
+            # randomly choose cuz we got nothing lol
+            return available_orders[int(random.random() * len(available_orders))]
 
-        return self.choose_random_move(battle)
+        choice = int(choice)
+
+        return available_orders[choice]

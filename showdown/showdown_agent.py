@@ -9,7 +9,9 @@ async def main():
         account_configuration=AccountConfiguration("showdown-dojo", "showdown-dojo"),
         server_configuration=ShowdownServerConfiguration,
     )
-    await player.accept_challenges('viewerisland', 1)
+    #await player.accept_challenges('firestarness', 1)
+    #await player.send_challenges("firestarness", n_challenges=1)
+    await player.ladder(1)
 
 
 
