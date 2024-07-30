@@ -58,7 +58,6 @@ class ShowdownLLMPlayer(Player):
         response = requests.request(
             "POST", self.llm_endpoint, headers=headers, data=json.dumps(payload)
         )
-        print(response.json())
         choice = response.json()["choices"][0]["message"]["content"]
         return choice
 
