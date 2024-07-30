@@ -2,16 +2,16 @@ import asyncio
 
 from poke_env import AccountConfiguration, ShowdownServerConfiguration
 from ShowdownSinglePlayer import ShowdownSinglePlayer
-
+ACCT_PASSWORD = os.getenv("ACCT_PASSWORD")
 
 async def main():
     player = ShowdownSinglePlayer(
-        account_configuration=AccountConfiguration("showdown-dojo", "showdown-dojo"),
+        account_configuration=AccountConfiguration("showdown-dojo", ACCT_PASSWORD),
         server_configuration=ShowdownServerConfiguration,
     )
-    #await player.accept_challenges('firestarness', 1)
-    #await player.send_challenges("firestarness", n_challenges=1)
-    await player.ladder(1)
+
+    await player.accept_challenges('viewerisland', 1)
+    #await player.ladder(1)
 
 
 
