@@ -6,27 +6,23 @@ from poke_env.environment.move import Move
 from poke_env.environment.pokemon import Pokemon
 import pandas as pd
 from typing import List
-import requests
-import copy
-import logging
+import requests, copy, logging, os, re, json, random
 from javascript import require
-import os
-import re
 from dotenv import load_dotenv
 
 load_dotenv()
 
-import json
-
 FIREWORKS_API_KEY = os.getenv("FIREWORKS_API_KEY")
 
 
-class ShowdownSinglePlayer(Player):
+class ShowdownLLMPlayer(Player):
     def __init__(
         self,
         account_configuration: AccountConfiguration,
         server_configuration: ShowdownServerConfiguration,
+        random_strategy: bool = False,
     ):
+        self.random_strategy = random_strategy
         self.random_sets = requests.get(
             "https://pkmn.github.io/randbats/data/gen9randombattle.json"
         ).json()
@@ -106,7 +102,7 @@ However, given the potential moves the opponent has, here is what the opponent c
 
 OPPONENT_MOVES_IMPACT_INDIVIDUAL
 
-This is also what the opponent moves can probably do to the rest of your team, if you decide to switch, do note if you switch you are giving the opponent a free turn to attack you:
+This is also what the opponent moves can probably do to the rest of your team, if you decide to switch, it may be a good idea to swap out if the current situation is unfavorable and switching to another pokemon would be beneficial:
 
 OPPONENT_MOVES_IMPACT_TEAM
 
@@ -365,6 +361,10 @@ Only output the number for the choice you want, so you should only respond with 
 
     def choose_move(self, battle: Battle) -> BattleOrder:
 
+
+        # get raw battle history
+        print(battle._current_observation)
+
         player_team = self._get_team_data(battle)
 
         opponent_team = self._find_potential_random_set(
@@ -425,7 +425,9 @@ Only output the number for the choice you want, so you should only respond with 
                     + "\n"
                 )
 
-        available_orders = [BattleOrder(move) for move in battle.available_moves]
+        available_orders: List[BattleOrder] = [
+            BattleOrder(move) for move in battle.available_moves
+        ]
         available_orders.extend(
             [BattleOrder(switch) for switch in battle.available_switches]
         )
@@ -460,7 +462,12 @@ Only output the number for the choice you want, so you should only respond with 
 
         available_orders_prompt = ""
         for i in range(len(available_orders)):
-            available_orders_prompt += str(i) + ". " + str(available_orders[i]) + "\n"
+            available_orders_prompt += (
+                str(i)
+                + ". "
+                + str(available_orders[i]).replace("/choose", "").strip()
+                + "\n"
+            )
 
         game_history = "\n".join(self.game_history)
         prompt = self._generate_prompt(
@@ -475,12 +482,17 @@ Only output the number for the choice you want, so you should only respond with 
             available_orders_prompt,
             battle.active_pokemon.fainted,
         )
-        choice = self._contact_llm(prompt)
-        choice = "".join(filter(str.isdigit, choice))
-        if choice == "":
-            # randomly choose cuz we got nothing lol
+        # print(prompt)
+
+        if not self.random_strategy:
+            choice = self._contact_llm(prompt)
+            choice = "".join(filter(str.isdigit, choice))
+            if choice == "":
+                # randomly choose cuz we got nothing lol
+                return available_orders[int(random.random() * len(available_orders))]
+
+            choice = int(choice)
+
+            return available_orders[choice]
+        else:
             return available_orders[int(random.random() * len(available_orders))]
-
-        choice = int(choice)
-
-        return available_orders[choice]
