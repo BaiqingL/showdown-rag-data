@@ -12,10 +12,10 @@ async def main():
     player = ShowdownLLMPlayer(
         account_configuration=AccountConfiguration("showdown-dojo", ACCT_PASSWORD),
         server_configuration=ShowdownServerConfiguration,
-        random_strategy=True,
+        random_strategy=False,
     )
 
-    await player.accept_challenges("viewerisland", 1)
+    await player.accept_challenges("firestarness", 1)
     # await player.ladder(1)
 
 

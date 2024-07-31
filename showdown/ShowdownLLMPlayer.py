@@ -9,10 +9,14 @@ from typing import List
 import requests, copy, logging, os, re, json, random
 from javascript import require
 from dotenv import load_dotenv
+from openai import OpenAI
+
 
 load_dotenv()
 
-FIREWORKS_API_KEY = os.getenv("FIREWORKS_API_KEY")
+OPENAI_ORG_ID = os.getenv("OPENAI_ORG_ID")
+OPENAI_PROJECT_ID = os.getenv("OPENAI_PROJECT_ID")
+OPENAI_SECRET_KEY = os.getenv("OPENAI_SECRET_KEY")
 
 
 class ShowdownLLMPlayer(Player):
@@ -30,35 +34,29 @@ class ShowdownLLMPlayer(Player):
         self.move_effects = pd.read_csv("data/moves.csv")
         self.item_lookup = json.load(open("data/items.json"))
         self.game_history = []
-        self.llm_endpoint = "https://api.fireworks.ai/inference/v1/chat/completions"
+        self.llm_client = OpenAI(
+            organization=OPENAI_ORG_ID,
+            project=OPENAI_PROJECT_ID,
+            api_key=OPENAI_SECRET_KEY,
+        )
         super().__init__(
             account_configuration=account_configuration,
             server_configuration=server_configuration,
             save_replays=True,
-            start_timer_on_battle_start=True,
+            start_timer_on_battle_start=False,
             battle_format="gen9randombattle",
         )
 
     def _contact_llm(self, message: str):
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + FIREWORKS_API_KEY,
-        }
-        payload = {
-            "model": "accounts/fireworks/models/llama-v3p1-405b-instruct",
-            "max_tokens": 16384,
-            "top_p": 1,
-            "top_k": 40,
-            "presence_penalty": 0,
-            "frequency_penalty": 0,
-            "temperature": 0.6,
-            "messages": [{"role": "user", "content": message}],
-        }
-        response = requests.request(
-            "POST", self.llm_endpoint, headers=headers, data=json.dumps(payload)
+        response = self.llm_client.chat.completions.create(
+            model="gpt-4o",
+            messages=[{"role": "user", "content": message}],
+            stream=False,
         )
-        choice = response.json()["choices"][0]["message"]["content"]
+        choice = response.choices[0].message.content
+        print(choice)
+        # grab the last line from choice
+        choice = choice.split("\n")[-1]
         return choice
 
     def _generate_prompt(
@@ -97,11 +95,11 @@ Given that you currently have sent out PLAYER_POKEMON as your pokemon and the op
 
 PLAYER_MOVES_IMPACT
 
-However, given the potential moves the opponent has, here is what the opponent can probably do to you in terms of hp ranges:
+However, given the potential moves the opponent has, here is what the opponent can do to you in terms of hp ranges:
 
 OPPONENT_MOVES_IMPACT_INDIVIDUAL
 
-This is also what the opponent moves can probably do to the rest of your team, if you decide to switch, it may be a good idea to swap out if the current situation is unfavorable and switching to another pokemon would be beneficial:
+This is also what the opponent moves can do to the rest of your team, if you decide to switch, if you are ineffective against the opponent or obviously weak against the opponent, switch out!
 
 OPPONENT_MOVES_IMPACT_TEAM
 
@@ -113,7 +111,9 @@ AVAILABLE_CHOICES
 
 Setting up is important, and you know when to switch, when to set up, and when to attack. Sometimes it's good to sacrifice a pokemon to get a free switch in, and sometimes it's good to set up to sweep the opponent's team. You know the best moves to use in every situation.
 
-Only output the number for the choice you want, so you should only respond with a number indicating the choice, don't explain, just give the number.
+Give the reasoning for the move, consider what the enemy may want to do, what you may want to do, what setups are important, and consider type advantage and switching in to tank potential hits.
+
+However, end your response with the number, the final line you should respond with should look like: "Final choice: 0" where 0 is the number of the choice you want to make.
 """
 
         prompt_fainted = """You are an expert in Pokemon and competitive battling. You are the best Pokemon showdown player in the random battle format.
@@ -147,7 +147,11 @@ Here are the available switches you can make:
 
 AVAILABLE_CHOICES
 
-Only output the number for the choice you want, so you should only respond with a number indicating the choice, don't explain, don't add any periods or extra information, just the number.
+Don't swap something in that's weak to the opponent given the moves and types you know about them.
+
+Give the reasoning for the move, consider what the enemy may want to do, what you may want to do, what setups are important, and consider type advantage and switching in to tank potential hits.
+
+However, end your response with the number, the final line you should respond with should look like: "Final choice: 0" where 0 is the number of the choice you want to make.
 """
         if fainted:
             return (
@@ -360,10 +364,6 @@ Only output the number for the choice you want, so you should only respond with 
 
     def choose_move(self, battle: Battle) -> BattleOrder:
 
-
-        # get raw battle history
-        print(battle._current_observation)
-
         player_team = self._get_team_data(battle)
 
         opponent_team = self._find_potential_random_set(
@@ -481,7 +481,6 @@ Only output the number for the choice you want, so you should only respond with 
             available_orders_prompt,
             battle.active_pokemon.fainted,
         )
-        # print(prompt)
 
         if not self.random_strategy:
             choice = self._contact_llm(prompt)
