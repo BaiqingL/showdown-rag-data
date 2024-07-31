@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 ACCT_PASSWORD = os.getenv("ACCT_PASSWORD")
+INCOMING_USERNAME = os.getenv("INCOMING_USERNAME")
 
 
 async def main():
@@ -15,7 +16,7 @@ async def main():
         random_strategy=False,
     )
 
-    await player.accept_challenges("firestarness", 1)
+    await player.accept_challenges(INCOMING_USERNAME, 1)
     # await player.ladder(1)
 
 

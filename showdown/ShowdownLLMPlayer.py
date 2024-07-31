@@ -111,6 +111,10 @@ AVAILABLE_CHOICES
 
 Setting up is important, and you know when to switch, when to set up, and when to attack. Sometimes it's good to sacrifice a pokemon to get a free switch in, and sometimes it's good to set up to sweep the opponent's team. You know the best moves to use in every situation.
 
+However, don't panic switch, and don't make a move that is obviously bad. Consider the pirority of moves, the type of moves, and the Pokemon's speed and stats when making a move.
+
+Analyze the game history and pay attention to your previous moves and your opponent's previous moves.
+
 Give the reasoning for the move, consider what the enemy may want to do, what you may want to do, what setups are important, and consider type advantage and switching in to tank potential hits.
 
 However, end your response with the number, the final line you should respond with should look like: "Final choice: 0" where 0 is the number of the choice you want to make.
@@ -267,7 +271,24 @@ However, end your response with the number, the final line you should respond wi
                 }
         return result
 
-    def _calculate_damage(self, atkr: dict, defdr: dict, move_used):
+    def _calculate_damage(
+        self,
+        atkr: dict,
+        defdr: dict,
+        move_used,
+        opponent: bool = False,
+        log: bool = False,
+    ):
+
+        # remove key evasion and accuracy from boosts
+        if "evasion" in atkr["boosts"]:
+            del atkr["boosts"]["evasion"]
+        if "accuracy" in atkr["boosts"]:
+            del atkr["boosts"]["accuracy"]
+        if "evasion" in defdr["boosts"]:
+            del defdr["boosts"]["evasion"]
+        if "accuracy" in defdr["boosts"]:
+            del defdr["boosts"]["accuracy"]
         damage_calc = require("@smogon/calc")
         generation = damage_calc.Generations.get(9)
         attacker = None
@@ -319,7 +340,14 @@ However, end your response with the number, the final line you should respond wi
                 generation, defdr.get("name").split("-")[0], defdr_attributes
             )
         move = damage_calc.Move.new(generation, move_used)
+
         result = damage_calc.calculate(generation, attacker, defender, move)
+        if log:
+            print("Attacker: ", attacker)
+            print("Defender: ", defender)
+            print("Defender HP: ", defender.originalCurHP)
+            print("Move: ", move)
+            print("RESULT: ", result)
         if result.damage == 0:
             return 0, 0
         if isinstance(result.damage, str):
@@ -342,12 +370,25 @@ However, end your response with the number, the final line you should respond wi
 
         # calculate the percentage of damage
         hp = defdr.get("hp")
+        if log:
+            print("DEFENDER HP Ratio: ", hp)
+            print("MIN DMG: ", min_dmg)
+            print("MAX DMG: ", max_dmg)
+            print("MOVE USED: ", move_used)
         if hp == 0:
             return "100%", "100%"
         if hp == None:
             hp = defdr.get("maximum hp")
-        min_dmg_percent = int(min_dmg / hp * 100)
-        max_dmg_percent = int(max_dmg / hp * 100)
+        if opponent:
+            min_dmg_percent = int(
+                min_dmg / (defender.originalCurHP * (hp / 100.0)) * 100
+            )
+            max_dmg_percent = int(
+                max_dmg / (defender.originalCurHP * (hp / 100.0)) * 100
+            )
+        else:
+            min_dmg_percent = int(min_dmg / hp * 100)
+            max_dmg_percent = int(max_dmg / hp * 100)
         return str(min_dmg_percent) + "%", str(max_dmg_percent) + "%"
 
     def _format_move_impact(self, move_name, impact_ranges, pkm_name) -> str:
@@ -374,11 +415,16 @@ However, end your response with the number, the final line you should respond wi
 
         cur_player_side = player_team[battle.active_pokemon.species]
         cur_opponent_side = opponent_team[battle.opponent_active_pokemon.species]
+
         for move in cur_player_side["moves"].keys():
             player_moves_impact.append(
-                (move, self._calculate_damage(cur_player_side, cur_opponent_side, move))
+                (
+                    move,
+                    self._calculate_damage(
+                        cur_player_side, cur_opponent_side, move, opponent=True
+                    ),
+                )
             )
-
         player_moves_impact_prompt = ""
         for impact in player_moves_impact:
             player_moves_impact_prompt += (
