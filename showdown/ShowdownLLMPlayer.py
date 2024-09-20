@@ -8,16 +8,8 @@ import pandas as pd
 from typing import List
 import requests, copy, logging, os, re, json, random
 from javascript import require
-from dotenv import load_dotenv
-from openai import OpenAI
-
-
-load_dotenv()
-
-OPENAI_ORG_ID = os.getenv("OPENAI_ORG_ID")
-OPENAI_PROJECT_ID = os.getenv("OPENAI_PROJECT_ID")
-OPENAI_SECRET_KEY = os.getenv("OPENAI_SECRET_KEY")
-
+from unsloth import FastLanguageModel
+from transformers import TextStreamer
 
 class ShowdownLLMPlayer(Player):
     def __init__(
@@ -34,11 +26,6 @@ class ShowdownLLMPlayer(Player):
         self.move_effects = pd.read_csv("data/moves.csv")
         self.item_lookup = json.load(open("data/items.json"))
         self.game_history = []
-        self.llm_client = OpenAI(
-            organization=OPENAI_ORG_ID,
-            project=OPENAI_PROJECT_ID,
-            api_key=OPENAI_SECRET_KEY,
-        )
         super().__init__(
             account_configuration=account_configuration,
             server_configuration=server_configuration,
@@ -46,18 +33,25 @@ class ShowdownLLMPlayer(Player):
             start_timer_on_battle_start=False,
             battle_format="gen9randombattle",
         )
+        self.model, self.tokenizer = FastLanguageModel.from_pretrained(
+            model_name = "showdown/lora_model",
+            max_seq_length = 10240,
+            dtype = None,
+            load_in_4bit = True,
+        )
+        FastLanguageModel.for_inference(self.model)
+        self.text_streamer = TextStreamer(self.tokenizer)
+
 
     def _contact_llm(self, message: str):
-        response = self.llm_client.chat.completions.create(
-            model="gpt-4o",
-            messages=[{"role": "user", "content": message}],
-            stream=False,
-        )
-        choice = response.choices[0].message.content
-        print(choice)
-        # grab the last line from choice
-        choice = choice.split("\n")[-1]
-        return choice
+        msg_format = "user\n{}<|im_end|>\n<|im_start|>\nassistant\n".format(message)
+        inputs = self.tokenizer([msg_format], return_tensors = "pt").to("cuda")
+
+        output = self.model.generate(**inputs, streamer = self.text_streamer, max_new_tokens = 2048)
+        generated_token_ids = output[0][len(inputs['input_ids'][0]):]
+        generated_text = self.tokenizer.decode(generated_token_ids, skip_special_tokens=True)
+
+        return generated_text
 
     def _generate_prompt(
         self,
@@ -66,119 +60,92 @@ class ShowdownLLMPlayer(Player):
         opponent_team,
         player_moves_impact,
         opponent_moves_impact,
-        opponent_moves_impact_team,
         player_active,
         opponent_active,
         available_choices,
-        fainted=False,
     ) -> str:
-        prompt_not_fainted = """You are an expert in Pokemon and competitive battling. You are the best Pokemon showdown player in the random battle format.
-You have been invited to a Pokemon tournament with a grand prize of $1,000,000. You are confident that you will win the tournament.
-You're skills are the best in the world, and you have never lost a random battle in your life. You are the best of the best.
-You know when to switch, when to set up, and when to attack. You know the best moves to use in every situation.
 
-Below is information about your team, what you currently know about the opponent team, and the current history of the battle.
+        type_effectiveness_prompt = """
+Type      | Strong Against         | Weak To
+----------|------------------------|------------------
+Normal    | -                      | Fighting
+Fire      | Grass, Ice, Bug, Steel | Water, Ground, Rock
+Water     | Fire, Ground, Rock     | Electric, Grass
+Electric  | Water, Flying          | Ground
+Grass     | Water, Ground, Rock    | Fire, Ice, Poison, Flying, Bug
+Ice       | Grass, Ground, Flying, | Fire, Fighting, Rock, Steel
+          | Dragon                 |
+Fighting  | Normal, Ice, Rock,     | Flying, Psychic, Fairy
+          | Dark, Steel            |
+Poison    | Grass, Fairy           | Ground, Psychic
+Ground    | Fire, Electric, Poison,| Water, Grass, Ice
+          | Rock, Steel            |
+Flying    | Grass, Fighting, Bug   | Electric, Ice, Rock
+Psychic   | Fighting, Poison       | Bug, Ghost, Dark
+Bug       | Grass, Psychic, Dark   | Fire, Flying, Rock
+Rock      | Fire, Ice, Flying, Bug | Water, Grass, Fighting, Ground, Steel
+Ghost     | Psychic, Ghost         | Ghost, Dark
+Dragon    | Dragon                 | Ice, Dragon, Fairy
+Dark      | Psychic, Ghost         | Fighting, Bug, Fairy
+Steel     | Ice, Rock, Fairy       | Fire, Fighting, Ground
+Fairy     | Fighting, Dragon, Dark | Poison, Steel
+"""
+        prompt_template = """You are an expert in Pokemon and competitive battling. Right now you are in a battle of the format random battles using Pokemon up to generation 9.
 
-Here is the current history of the battle:
+Here's the scenario:
+[SCENARIO]
 
-GAME_HISTORY
+Start with a brief overview of the situation.
+Break down your reasoning step-by-step, and be thorough in your analysis. Provide reasoning in sections.
+
+Make sure to cite the tips you used when making your decision.
+
+Consider type advantages, the alternative moves the player could have made and why they might have been rejected.
+Conclude with a summary of why this move was likely the best choice in this situation.
+
+Here's the type effectiveness chart:
+[TYPE EFFECTIVENESS CHART]
 
 Your current team and moves as to the best of your knowledge:
 
-PLAYER_TEAM_INFO
+[PLAYER_TEAM_INFO]
 
 The opponent team and moves as to the best of your knowledge, since I also looked up the potential movesets for you:
 
-OPPONENT_TEAM_INFO
+[OPPONENT_TEAM_INFO]
 
-Given that you currently have sent out PLAYER_POKEMON as your pokemon and the opponent has sent out OPPONENT_POKEMON, here is what your moves can probably do to the opponent in terms of hp ranges:
+Here is the impact of the your [PLAYER_POKEMON]'s moves and the hp range that the move will do:
+[PLAYER_MOVES_IMPACT]
 
-PLAYER_MOVES_IMPACT
+Here is the impact of the opponent's [OPPONENT_POKEMON] moves and the hp range that the move will do:
+[OPPONENT_MOVES_IMPACT]
 
-However, given the potential moves the opponent has, here is what the opponent can do to you in terms of hp ranges:
+Your [PLAYER_POKEMON]. You have the following choices:
+[CHOICES]
 
-OPPONENT_MOVES_IMPACT_INDIVIDUAL
+Format your response in the following way:
 
-This is also what the opponent moves can do to the rest of your team, if you decide to switch, if you are ineffective against the opponent or obviously weak against the opponent, switch out!
+<Summary>
 
-OPPONENT_MOVES_IMPACT_TEAM
+<Analysis>
 
-Again, right now your pokemon is PLAYER_POKEMON and the opponent pokemon is OPPONENT_POKEMON.
+<Conclusion>
 
-Here are the available choices you can make:
+<Choice>
 
-AVAILABLE_CHOICES
+Finally, end your response with the choice, in the format of "Final choice: [choice number]"""
 
-Setting up is important, and you know when to switch, when to set up, and when to attack. Sometimes it's good to sacrifice a pokemon to get a free switch in, and sometimes it's good to set up to sweep the opponent's team. You know the best moves to use in every situation.
-
-However, don't panic switch, and don't make a move that is obviously bad. Consider the pirority of moves, the type of moves, and the Pokemon's speed and stats when making a move.
-
-Analyze the game history and pay attention to your previous moves and your opponent's previous moves.
-
-Give the reasoning for the move, consider what the enemy may want to do, what you may want to do, what setups are important, and consider type advantage and switching in to tank potential hits.
-
-However, end your response with the number, the final line you should respond with should look like: "Final choice: 0" where 0 is the number of the choice you want to make.
-"""
-
-        prompt_fainted = """You are an expert in Pokemon and competitive battling. You are the best Pokemon showdown player in the random battle format.
-You have been invited to a Pokemon tournament with a grand prize of $1,000,000. You are confident that you will win the tournament.
-You're skills are the best in the world, and you have never lost a random battle in your life. You are the best of the best.
-You know when to switch, when to set up, and when to attack. You know the best moves to use in every situation.
-
-Below is information about your team, what you currently know about the opponent team, and the current history of the battle.
-
-Here is the current history of the battle:
-
-GAME_HISTORY
-
-Note that the pokemon PLAYER_POKEMON you sent out has fainted, and you need to switch to another pokemon.
-
-Your current team and moves as to the best of your knowledge:
-
-PLAYER_TEAM_INFO
-
-The opponent team and moves as to the best of your knowledge, since I also looked up the potential movesets for you:
-
-OPPONENT_TEAM_INFO
-
-This is what the opponent moves can probably do to the rest of your team given the current situation:
-
-OPPONENT_MOVES_IMPACT_TEAM
-
-Your Pokemon PLAYER_POKEMON has fainted, and the opponent currently has OPPONENT_POKEMON out.
-
-Here are the available switches you can make:
-
-AVAILABLE_CHOICES
-
-Don't swap something in that's weak to the opponent given the moves and types you know about them.
-
-Give the reasoning for the move, consider what the enemy may want to do, what you may want to do, what setups are important, and consider type advantage and switching in to tank potential hits.
-
-However, end your response with the number, the final line you should respond with should look like: "Final choice: 0" where 0 is the number of the choice you want to make.
-"""
-        if fainted:
-            return (
-                prompt_fainted.replace("GAME_HISTORY", game_history)
-                .replace("PLAYER_TEAM_INFO", player_team)
-                .replace("OPPONENT_TEAM_INFO", opponent_team)
-                .replace("OPPONENT_MOVES_IMPACT_TEAM", opponent_moves_impact_team)
-                .replace("PLAYER_POKEMON", player_active)
-                .replace("OPPONENT_POKEMON", opponent_active)
-                .replace("AVAILABLE_CHOICES", available_choices)
-            )
-        else:
-            return (
-                prompt_not_fainted.replace("GAME_HISTORY", game_history)
-                .replace("PLAYER_TEAM_INFO", player_team)
-                .replace("OPPONENT_TEAM_INFO", opponent_team)
-                .replace("PLAYER_MOVES_IMPACT", player_moves_impact)
-                .replace("OPPONENT_MOVES_IMPACT_INDIVIDUAL", opponent_moves_impact)
-                .replace("OPPONENT_MOVES_IMPACT_TEAM", opponent_moves_impact_team)
-                .replace("PLAYER_POKEMON", player_active)
-                .replace("OPPONENT_POKEMON", opponent_active)
-                .replace("AVAILABLE_CHOICES", available_choices)
-            )
+        return (
+            prompt_template.replace("[SCENARIO]", game_history)
+            .replace("[TYPE EFFECTIVENESS CHART]", type_effectiveness_prompt)
+            .replace("[PLAYER_TEAM_INFO]", player_team)
+            .replace("[OPPONENT_TEAM_INFO]", opponent_team)
+            .replace("[PLAYER_MOVES_IMPACT]", player_moves_impact)
+            .replace("[OPPONENT_MOVES_IMPACT]", opponent_moves_impact)
+            .replace("[PLAYER_POKEMON]", player_active)
+            .replace("[OPPONENT_POKEMON]", opponent_active)
+            .replace("[CHOICES]", available_choices)
+        )
 
     async def _handle_battle_message(self, split_messages: List[List[str]]):
         battle_log = []
@@ -404,15 +371,12 @@ However, end your response with the number, the final line you should respond wi
         )
 
     def choose_move(self, battle: Battle) -> BattleOrder:
-
         player_team = self._get_team_data(battle)
-
         opponent_team = self._find_potential_random_set(
             self._get_team_data(battle, opponent=True)
         )
 
         player_moves_impact = []
-
         cur_player_side = player_team[battle.active_pokemon.species]
         cur_opponent_side = opponent_team[battle.opponent_active_pokemon.species]
 
@@ -446,29 +410,6 @@ However, end your response with the number, the final line you should respond wi
                 self._format_move_impact(impact[0], impact[1], cur_player_side["name"])
                 + "\n"
             )
-
-        opponent_moves_impact_team = {}
-        for pokemon in player_team.keys():
-            opponent_moves_impact_team[pokemon] = []
-            for move in cur_opponent_side["moves"].keys():
-                opponent_moves_impact_team[pokemon].append(
-                    (
-                        move,
-                        self._calculate_damage(
-                            player_team[pokemon], cur_opponent_side, move
-                        ),
-                    )
-                )
-
-        opponent_moves_impact_team_prompt = ""
-        for pokemon in opponent_moves_impact_team.keys():
-            for impact in opponent_moves_impact_team[pokemon]:
-                opponent_moves_impact_team_prompt += (
-                    self._format_move_impact(
-                        impact[0], impact[1], player_team[pokemon]["name"]
-                    )
-                    + "\n"
-                )
 
         available_orders: List[BattleOrder] = [
             BattleOrder(move) for move in battle.available_moves
@@ -508,7 +449,7 @@ However, end your response with the number, the final line you should respond wi
         available_orders_prompt = ""
         for i in range(len(available_orders)):
             available_orders_prompt += (
-                str(i)
+                str(i+1)
                 + ". "
                 + str(available_orders[i]).replace("/choose", "").strip()
                 + "\n"
@@ -521,21 +462,23 @@ However, end your response with the number, the final line you should respond wi
             str(opponent_team),
             player_moves_impact_prompt,
             opponent_moves_impact_prompt,
-            opponent_moves_impact_team_prompt,
             cur_player_side["name"],
             cur_opponent_side["name"],
             available_orders_prompt,
-            battle.active_pokemon.fainted,
         )
 
         if not self.random_strategy:
             choice = self._contact_llm(prompt)
-            choice = "".join(filter(str.isdigit, choice))
-            if choice == "":
+            choice = choice.lower().split("final choice:")[1]
+            choice = "".join(filter(str.isdigit, choice)).strip()
+            print("CHOICE: ", choice)
+            if choice == "" or int(choice) >= len(available_orders):
+                print("Unable to parse choice, choosing randomly")
                 # randomly choose cuz we got nothing lol
                 return available_orders[int(random.random() * len(available_orders))]
 
-            choice = int(choice)
+            # compensate for 0th index
+            choice = int(choice) - 1
 
             return available_orders[choice]
         else:

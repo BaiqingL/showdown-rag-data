@@ -167,3 +167,5 @@ battles_with_prompts.parquet
 showdown/replays
 *.html
 *.txt
+
+lora_model/

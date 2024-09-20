@@ -15,9 +15,10 @@ async def main():
         server_configuration=ShowdownServerConfiguration,
         random_strategy=False,
     )
+    print("Logged in, ready to play")
 
-    await player.accept_challenges(INCOMING_USERNAME, 1)
-    # await player.ladder(1)
+    # await player.accept_challenges(INCOMING_USERNAME, 1)
+    await player.ladder(1)
 
 
 if __name__ == "__main__":
